@@ -31,6 +31,9 @@
 ```bash
 $ npm install
 ```
+install dependencies
+
+npm install class-validator class-transformer
 
 ## Compile and run the project
 

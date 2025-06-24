@@ -53,6 +53,7 @@ export class UserController {
 
   @Post('/team-member')
   async addTeamMember(@Body() createUserDto: CreateUserDto) {
+    console.log('Received DTO:', createUserDto);
     return this.userService.addTeamMember(createUserDto);
   }
 }

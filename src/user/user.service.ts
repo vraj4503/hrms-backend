@@ -188,8 +188,8 @@ export class UserService {
       const [rows] = await connection.execute(`SELECT * FROM user WHERE UID = ?`, [insertedId]);
       const newUser: User = (rows as User[])[0];
       await connection.execute(
-        `UPDATE user SET CreatedBy = ?, UpdatedBy = ? WHERE UID = ?`,
-        [newUser.UID, newUser.UID, newUser.UID]
+        `UPDATE user SET CreatedBy = ? WHERE UID = ?`,
+        [newUser.UID, newUser.UID]
       );
       return newUser;
     } catch (error) {

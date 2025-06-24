@@ -12,14 +12,14 @@ export class UserService {
   constructor() {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    console.log('Received CreateUserDto:', createUserDto);
-    const { Fname, Lname, Mname, DOB, StatusType, DepartmentID, UserType, Password, Email, Phone, CID } = createUserDto;
+    console.log('Service received:', createUserDto);
+    const { Fname, Lname, Mname, DOB, StatusType, DepartmentID, UserType, Password, Email, Phone, CID, CreatedBy } = createUserDto;
     const encryptedPassword = encrypt(Password);
     const connection = await mysqlPool.getConnection();
     try {
       const [result] = await connection.execute(
-        `INSERT INTO user (Fname, Lname, Mname, DOB, StatusType, DepartmentID, UserType, Password, Email, Phone, CID, created, updated, CreatedBy, UpdatedBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), ?, ?)`,
-        [Fname, Lname, Mname, DOB, StatusType, DepartmentID, UserType, encryptedPassword, Email, Phone, CID, null, null]
+        'INSERT INTO user (Fname, Lname, Mname, DOB, StatusType, DepartmentID, UserType, Password, Email, Phone, CID, created, updated, CreatedBy, UpdatedBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), ?, ?)',
+        [Fname, Lname, Mname, DOB, StatusType, DepartmentID, UserType, encryptedPassword, Email, Phone, CID, CreatedBy, CreatedBy]
       );
 
       const insertedId = (result as any).insertId;
@@ -157,6 +157,19 @@ export class UserService {
     } catch (error) {
       console.error('Error during user login:', error);
       throw error;
+    } finally {
+      connection.release();
+    }
+  }
+
+  async findByCompany(companyId: number): Promise<User[]> {
+    const connection = await mysqlPool.getConnection();
+    try {
+      const [rows] = await connection.execute('SELECT * FROM user WHERE CID = ?', [companyId]);
+      return rows as User[];
+    } catch (error) {
+      console.error(`Error fetching users for company ID ${companyId}:`, error);
+      throw new BadRequestException('Failed to fetch users by company.');
     } finally {
       connection.release();
     }

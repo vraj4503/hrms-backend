@@ -44,7 +44,7 @@ export class User {
   @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
   updated: Date;
 
-  @Column({ type: 'int', width: 11, nullable: true })
+  @Column({ type: 'int', width: 11, nullable: false })
   CreatedBy: number;
 
   @Column({ type: 'int', width: 11, nullable: true })

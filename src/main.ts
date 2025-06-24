@@ -16,6 +16,11 @@ async function bootstrap() {
     credentials: true,
   });
 
+  console.log('CORS enabled for:', [
+    'http://localhost:3000',
+    'https://hrms-frontend-git-vraj24062025-vrajs-projects-c97b9bd7.vercel.app'
+  ]);
+
   app.useGlobalPipes(new ValidationPipe());
 
   await app.listen(process.env.PORT ?? 5000);

@@ -7,11 +7,19 @@ async function bootstrap() {
   
   
   app.enableCors({
-    origin: 'http://localhost:3000', 
+    origin: [
+      'http://localhost:3000',
+      'https://hrms-frontend-git-vraj24062025-vrajs-projects-c97b9bd7.vercel.app'
+    ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
   });
+
+  console.log('CORS ORIGINS:', [
+    'http://localhost:3000',
+    'https://hrms-frontend-git-vraj24062025-vrajs-projects-c97b9bd7.vercel.app'
+  ]);
 
   app.useGlobalPipes(new ValidationPipe());
 

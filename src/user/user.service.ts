@@ -180,9 +180,9 @@ export class UserService {
     const encryptedPassword = encrypt(Password);
     const connection = await mysqlPool.getConnection();
     try {
-      const [result] = await connection.execute(
-        'INSERT INTO user (Fname, Lname, Mname, DOB, StatusType, DepartmentID, UserType, Password, Email, Phone, CID, created, updated, CreatedBy, UpdatedBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), ?, ?)',
-        [Fname, Lname, Mname, DOB, StatusType, DepartmentID, UserType, encryptedPassword, Email, Phone, CID, CreatedBy, CreatedBy]
+       const [result] = await connection.execute(
+        'INSERT INTO user (Fname, Lname, Mname, DOB, StatusType, DepartmentID, UserType, Password, Email, Phone, CID, created, updated, CreatedBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), ?)',
+        [Fname, Lname, Mname, DOB, StatusType, DepartmentID, UserType, encryptedPassword, Email, Phone, CID, CreatedBy]
       );
       const insertedId = (result as any).insertId;
       const [rows] = await connection.execute(`SELECT * FROM user WHERE UID = ?`, [insertedId]);

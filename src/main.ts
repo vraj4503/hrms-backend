@@ -9,7 +9,8 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'http://localhost:3000',
-      'https://hrms-frontend-72y2.vercel.app'
+      'https://hrms-frontend-72y2.vercel.app',
+      'https://hrms-frontend-git-vraj24062025-vrajs-projects-c97b9bd7.vercel.app/'
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],

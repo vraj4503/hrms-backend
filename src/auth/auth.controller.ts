@@ -1,11 +1,11 @@
 import { Controller, Post, Request, UseGuards, UnauthorizedException } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
-import * as CryptoJS from 'crypto-js';
+
 
 @Controller('auth')
 export class AuthController {
-  private readonly SECRET_KEY = 'Vraj123';
+  
 
   constructor(private authService: AuthService) {}
 

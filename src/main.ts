@@ -16,7 +16,7 @@ async function bootstrap() {
     credentials: true,
   });
 
-  console.log('CORS enabled for:', [
+  console.log('CORS ORIGINS:', [
     'http://localhost:3000',
     'https://hrms-frontend-git-vraj24062025-vrajs-projects-c97b9bd7.vercel.app'
   ]);

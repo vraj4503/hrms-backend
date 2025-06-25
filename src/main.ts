@@ -11,7 +11,8 @@ async function bootstrap() {
       const allowedOrigins = [
         'http://localhost:3000',
         'https://hrms-frontend-beryl.vercel.app/',
-        'https://hrms-frontend-git-main-vrajs-projects-c97b9bd7.vercel.app'
+        'https://hrms-frontend-git-main-vrajs-projects-c97b9bd7.vercel.app',
+        'https://hrms-frontend-beryl.vercel.app'
       ];
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);

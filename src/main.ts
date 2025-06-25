@@ -7,14 +7,23 @@ async function bootstrap() {
   
   
   app.enableCors({
-    origin: [
-      'http://localhost:3000',
-      'https://hrms-frontend-72y2.vercel.app'
-    ],
+    origin: (origin, callback) => {
+      const allowedOrigins = [
+        'http://localhost:3000',
+        'https://hrms-frontend-git-vraj24062025-vrajs-projects-c97b9bd7.vercel.app',
+        'https://hrms-frontend-git-main-vrajs-projects-c97b9bd7.vercel.app'
+      ];
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
   });
+
 
   app.useGlobalPipes(new ValidationPipe());
 

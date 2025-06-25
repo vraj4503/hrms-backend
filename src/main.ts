@@ -28,7 +28,7 @@ async function bootstrap() {
 
   console.log('CORS ORIGINS:', [
     'http://localhost:3000',
-    'https://hrms-frontend-git-vraj24062025-vrajs-projects-c97b9bd7.vercel.app'
+    'https://hrms-frontend-git-main-vrajs-projects-c97b9bd7.vercel.app/'
   ]);
 
   app.useGlobalPipes(new ValidationPipe());

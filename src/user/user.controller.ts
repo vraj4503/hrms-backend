@@ -6,6 +6,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from '../auth/auth.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 
+
 @Controller('user')
 export class UserController {
   constructor(
@@ -49,4 +50,11 @@ export class UserController {
   findByCompany(@Param('cid') cid: string) {
     return this.userService.findByCompany(Number(cid));
   }
-} 
+
+  @Post('/team-member')
+  async addTeamMember(@Body() createUserDto: CreateUserDto) {
+    console.log('Received DTO:', createUserDto);
+    return this.userService.addTeamMember(createUserDto);
+  }
+}
+

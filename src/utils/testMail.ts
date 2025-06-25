@@ -3,7 +3,7 @@ import { sendMail } from "./email";
 
 (async () => {
   const response = await sendMail(
-    'Urmi-Gurav@anantam.io',
+    'vraj-prajapati@anantamit.com',
     'Test Email',
     'Hello! This is a test email from HRMS system.'
   );

@@ -180,7 +180,9 @@ export class UserService {
     const encryptedPassword = encrypt(Password);
     const connection = await mysqlPool.getConnection();
     try {
+
       const [result] = await connection.execute(
+
         'INSERT INTO user (Fname, Lname, Mname, DOB, StatusType, DepartmentID, UserType, Password, Email, Phone, CID, created, updated, CreatedBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), ?)',
         [Fname, Lname, Mname, DOB, StatusType, DepartmentID, UserType, encryptedPassword, Email, Phone, CID, CreatedBy]
       );

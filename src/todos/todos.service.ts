@@ -11,8 +11,8 @@ export class ToDosService {
     const connection = await mysqlPool.getConnection();
     try {
       const [result] = await connection.execute(
-        `INSERT INTO to_dos (BucketID, AssignTo, AssgnBy, NotificationTo, DueDateTime, Priority, StatusType, FilePath, Title, Description,  CID, created, updated, CreatedBy, UpdatedBy)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), ?, ?)`,
+        `INSERT INTO to_dos (BucketID, AssignTo, AssgnBy, NotificationTo, DueDateTime, Priority, StatusType, FilePath, Title, Description, CID, created, updated, CreatedBy, UpdatedBy)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), ?, ?)`,
         [BucketID || null, AssignTo || null, AssgnBy || null, NotificationTo || null, DueDateTime || null, Priority || null, StatusType || null, FilePath || null, Title || null, Description || null,  CID || null, CreatedBy || null, UpdatedBy || null]
       );
 

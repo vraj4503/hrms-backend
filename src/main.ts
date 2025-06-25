@@ -10,7 +10,6 @@ async function bootstrap() {
     origin: (origin, callback) => {
       const allowedOrigins = [
         'http://localhost:3000',
-        'https://hrms-frontend-beryl.vercel.app/',
         'https://hrms-frontend-git-main-vrajs-projects-c97b9bd7.vercel.app',
         'https://hrms-frontend-beryl.vercel.app'
       ];

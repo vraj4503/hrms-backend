@@ -18,7 +18,7 @@ export class UserService {
       Password, Email, Phone, CID, CreatedBy
     } = createUserDto;
 
-    // Replace undefined with null for all parameters
+   
     const params = [
       Fname ?? null,
       Lname ?? null,
@@ -31,14 +31,13 @@ export class UserService {
       Email ?? null,
       Phone ?? null,
       CID ?? null,
-      CreatedBy ?? null,
       CreatedBy ?? null
     ];
 
     const connection = await mysqlPool.getConnection();
     try {
       const [result] = await connection.execute(
-        'INSERT INTO user (Fname, Lname, Mname, DOB, StatusType, DepartmentID, UserType, Password, Email, Phone, CID, created, updated, CreatedBy, UpdatedBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), ?, ?)',
+        'INSERT INTO user (Fname, Lname, Mname, DOB, StatusType, DepartmentID, UserType, Password, Email, Phone, CID, created, updated, CreatedBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), ?)',
         params
       );
 
@@ -47,12 +46,12 @@ export class UserService {
       const newUser: User = (rows as User[])[0];
 
       const [updateResult] = await connection.execute(
-        `UPDATE user SET CreatedBy = ?, UpdatedBy = ? WHERE UID = ?`,
-        [newUser.UID, newUser.UID, newUser.UID]
+        `UPDATE user SET CreatedBy = ? WHERE UID = ?`,
+        [newUser.UID, newUser.UID]
       );
 
       if ((updateResult as any).affectedRows === 0) {
-        console.warn(`Could not set CreatedBy/UpdatedBy for user ${newUser.UID}`);
+        console.warn(`Could not set CreatedBy for user ${newUser.UID}`);
       }
 
       return newUser;

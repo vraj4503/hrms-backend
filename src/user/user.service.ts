@@ -13,20 +13,39 @@ export class UserService {
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     console.log('Service received:', createUserDto);
-    const { Fname, Lname, Mname, DOB, StatusType, DepartmentID, UserType, Password, Email, Phone, CID, CreatedBy } = createUserDto;
-    const encryptedPassword = encrypt(Password);
+    const {
+      Fname, Lname, Mname, DOB, StatusType, DepartmentID, UserType,
+      Password, Email, Phone, CID, CreatedBy
+    } = createUserDto;
+
+    // Replace undefined with null for all parameters
+    const params = [
+      Fname ?? null,
+      Lname ?? null,
+      Mname ?? null,
+      DOB ?? null,
+      StatusType ?? null,
+      DepartmentID ?? null,
+      UserType ?? null,
+      Password ? encrypt(Password) : null,
+      Email ?? null,
+      Phone ?? null,
+      CID ?? null,
+      CreatedBy ?? null,
+      CreatedBy ?? null
+    ];
+
     const connection = await mysqlPool.getConnection();
     try {
       const [result] = await connection.execute(
         'INSERT INTO user (Fname, Lname, Mname, DOB, StatusType, DepartmentID, UserType, Password, Email, Phone, CID, created, updated, CreatedBy, UpdatedBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), ?, ?)',
-        [Fname, Lname, Mname, DOB, StatusType, DepartmentID, UserType, encryptedPassword, Email, Phone, CID, CreatedBy, CreatedBy]
+        params
       );
 
       const insertedId = (result as any).insertId;
       const [rows] = await connection.execute(`SELECT * FROM user WHERE UID = ?`, [insertedId]);
       const newUser: User = (rows as User[])[0];
 
-      
       const [updateResult] = await connection.execute(
         `UPDATE user SET CreatedBy = ?, UpdatedBy = ? WHERE UID = ?`,
         [newUser.UID, newUser.UID, newUser.UID]

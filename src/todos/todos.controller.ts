@@ -30,4 +30,9 @@ export class ToDosController {
   async deleteToDo(@Param('id') id: string): Promise<void> {
     return this.todosService.deleteToDo(+id);
   }
+  
+  @Get('bucket/:bucketId')
+  async getToDosByBucketId(@Param('bucketId') bucketId: string): Promise<ToDos[]> {
+    return this.todosService.getToDosByBucketId(+bucketId);
+  }
 }

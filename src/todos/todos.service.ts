@@ -123,4 +123,17 @@ export class ToDosService {
       connection.release();
     }
   }
+
+  async getToDosByBucketId(bucketId: number): Promise<ToDos[]> {
+    const connection = await mysqlPool.getConnection();
+    try {
+      const [rows] = await connection.execute('SELECT * FROM to_dos WHERE BucketID = ?', [bucketId]);
+      return rows as ToDos[];
+    } catch (error) {
+      console.error(`Error fetching ToDos by BucketID ${bucketId}:`, error);
+      throw new BadRequestException('Failed to fetch ToDos by BucketID.');
+    } finally {
+      connection.release();
+    }
+  }
 }

@@ -31,7 +31,7 @@ export class UserService {
       Email ?? null,
       Phone ?? null,
       CID ?? null,
-      CreatedBy ?? null
+      0 
     ];
 
     const connection = await mysqlPool.getConnection();
@@ -45,6 +45,7 @@ export class UserService {
       const [rows] = await connection.execute(`SELECT * FROM user WHERE UID = ?`, [insertedId]);
       const newUser: User = (rows as User[])[0];
 
+      
       const [updateResult] = await connection.execute(
         `UPDATE user SET CreatedBy = ? WHERE UID = ?`,
         [newUser.UID, newUser.UID]

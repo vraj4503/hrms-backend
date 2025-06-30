@@ -49,4 +49,10 @@ export class User {
 
   @Column({ type: 'int', width: 11, nullable: true })
   UpdatedBy: number;
+
+  @Column({ length: 255, nullable: true })
+  resetOtp: string;
+
+  @Column({ type: 'datetime', nullable: true })
+  resetOtpExpiry: Date;
 } 

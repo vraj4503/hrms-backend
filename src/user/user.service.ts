@@ -4,7 +4,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { encrypt, decrypt } from '../utils/encryption';
-import * as bcrypt from 'bcrypt';
+import { sendMail } from '../utils/email';
+import * as crypto from 'crypto';
 import { mysqlPool } from '../config/mysql.config';
 
 @Injectable()
@@ -216,6 +217,80 @@ export class UserService {
     } catch (error) {
       console.error('Error adding team member:', error);
       throw new BadRequestException('Failed to add team member.');
+    } finally {
+      connection.release();
+    }
+  }
+
+  async requestPasswordReset(email: string): Promise<void> {
+    const connection = await mysqlPool.getConnection();
+    try {
+      const [rows] = await connection.execute('SELECT * FROM user WHERE Email = ?', [email]);
+      const user = (rows as User[])[0];
+      if (!user) return;
+
+      const otp = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit OTP
+      const hashedOtp = crypto.createHash('sha256').update(otp).digest('hex');
+      const expiryTime = new Date(Date.now() + 3 * 60 * 1000); // 3 min expiry
+
+      await connection.execute(
+        'UPDATE user SET resetOtp = ?, resetOtpExpiry = ? WHERE UID = ?',
+        [hashedOtp, expiryTime, user.UID]
+      );
+
+      console.log('Preparing to send OTP email to:', user.Email, 'OTP:', otp);
+      const mailResult = await sendMail(
+        user.Email,
+        'Your OTP for Password Reset',
+        `Your OTP is: ${otp}`,
+      );
+      console.log('sendMail result:', mailResult);
+    } catch (error) {
+      console.error('Error requesting password reset:', error);
+      throw new BadRequestException('Failed to request password reset.');
+    } finally {
+      connection.release();
+    }
+  }
+
+  async verifyOtp(email: string, otp: string): Promise<boolean> {
+    const connection = await mysqlPool.getConnection();
+    try {
+      const [rows] = await connection.execute('SELECT * FROM user WHERE Email = ?', [email]);
+      const user = (rows as User[])[0];
+      if (!user || !user.resetOtp || !user.resetOtpExpiry) return false;
+      if (user.resetOtpExpiry < new Date()) return false;
+
+      const hashedOtp = crypto.createHash('sha256').update(otp).digest('hex');
+      return user.resetOtp === hashedOtp;
+    } catch (error) {
+      console.error('Error verifying OTP:', error);
+      return false;
+    } finally {
+      connection.release();
+    }
+  }
+
+  async resetPassword(email: string, otp: string, newPassword: string): Promise<boolean> {
+    const connection = await mysqlPool.getConnection();
+    try {
+      const [rows] = await connection.execute('SELECT * FROM user WHERE Email = ?', [email]);
+      const user = (rows as User[])[0];
+      if (!user || !user.resetOtp || !user.resetOtpExpiry) return false;
+      if (user.resetOtpExpiry < new Date()) return false;
+
+      const hashedOtp = crypto.createHash('sha256').update(otp).digest('hex');
+      if (user.resetOtp !== hashedOtp) return false;
+
+      const encryptedPassword = encrypt(newPassword);
+      await connection.execute(
+        'UPDATE user SET Password = ?, resetOtp = NULL, resetOtpExpiry = NULL WHERE UID = ?',
+        [encryptedPassword, user.UID]
+      );
+      return true;
+    } catch (error) {
+      console.error('Error resetting password:', error);
+      return false;
     } finally {
       connection.release();
     }

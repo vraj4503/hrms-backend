@@ -5,6 +5,9 @@ import { LoginUserDto } from './dto/login-user.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from '../auth/auth.service';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { RequestPasswordResetDto } from './dto/request-password-reset.dto';
+import { VerifyOtpDto } from './dto/verify-otp.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 
 @Controller('user')
@@ -55,6 +58,27 @@ export class UserController {
   async addTeamMember(@Body() createUserDto: CreateUserDto) {
     console.log('Received DTO:', createUserDto);
     return this.userService.addTeamMember(createUserDto);
+  }
+
+   @Post('request-password-reset')
+  async requestPasswordReset(@Body() body: RequestPasswordResetDto) {
+    await this.userService.requestPasswordReset(body.email);
+    return { message: 'If the email exists, an OTP has been sent.' };
+  }
+
+  @Post('verify-otp')
+  async verifyOtp(@Body() body: VerifyOtpDto) {
+    const isValid = await this.userService.verifyOtp(body.email, body.otp);
+    return { valid: isValid };
+  }
+
+  @Post('reset-password')
+  async resetPassword(@Body() body: ResetPasswordDto) {
+    if (body.newPassword !== body.confirmPassword) {
+      return { success: false, message: 'Passwords do not match' };
+    }
+    const success = await this.userService.resetPassword(body.email, body.otp, body.newPassword);
+    return { success };
   }
 }
 

@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { Bucket } from '../bucket/bucket.entity';
 import { User } from '../user/user.entity';
 import { Company } from '../company/company.entity';
@@ -49,7 +55,11 @@ export class ToDos {
   @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   created: Date;
 
-  @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
+  @Column({
+    type: 'datetime',
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+  })
   updated: Date;
 
   @Column({ nullable: true })

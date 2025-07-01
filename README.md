@@ -35,6 +35,14 @@ install dependencies
 
 npm install class-validator class-transformer
 
+## WhatsApp Notification Setup
+
+1. Add the following environment variables to your .env file:
+   - WHATSAPP_TOKEN=your_meta_whatsapp_api_token
+   - WHATSAPP_PHONE_NUMBER_ID=your_meta_whatsapp_phone_number_id
+2. Install dependencies:
+   npm install node-fetch@^3.3.2
+
 ## Compile and run the project
 
 ```bash

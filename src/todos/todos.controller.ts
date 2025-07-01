@@ -1,4 +1,13 @@
-import { Controller, Post, Get, Body, Param, Put, Delete, NotFoundException, Query } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Body,
+  Param,
+  Put,
+  Delete,
+  Query,
+} from '@nestjs/common';
 import { ToDosService } from './todos.service';
 import { ToDos } from './todos.entity';
 
@@ -7,7 +16,9 @@ export class ToDosController {
   constructor(private readonly todosService: ToDosService) {}
 
   @Post()
-  async createToDo(@Body() todo: Partial<ToDos>): Promise<ToDos> {
+  async createToDo(
+    @Body() todo: Partial<ToDos>,
+  ): Promise<{ todo: ToDos; whatsappStatus: string }> {
     return this.todosService.createToDo(todo);
   }
 
@@ -22,7 +33,10 @@ export class ToDosController {
   }
 
   @Put(':id')
-  async updateToDo(@Param('id') id: string, @Body() todo: Partial<ToDos>): Promise<ToDos> {
+  async updateToDo(
+    @Param('id') id: string,
+    @Body() todo: Partial<ToDos>,
+  ): Promise<ToDos> {
     return this.todosService.updateToDo(+id, todo);
   }
 
@@ -32,7 +46,9 @@ export class ToDosController {
   }
   
   @Get('bucket/:bucketId')
-  async getToDosByBucketId(@Param('bucketId') bucketId: string): Promise<ToDos[]> {
+  async getToDosByBucketId(
+    @Param('bucketId') bucketId: string,
+  ): Promise<ToDos[]> {
     return this.todosService.getToDosByBucketId(+bucketId);
   }
 }

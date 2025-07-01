@@ -1,4 +1,8 @@
-import fetch from 'node-fetch';
+import type { RequestInfo, RequestInit, Response } from 'node-fetch';
+
+const fetch: (url: RequestInfo, init?: RequestInit) => Promise<Response> =
+  (...args) => import('node-fetch').then(mod => mod.default(...args));
+
 
 const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN || '';
 const PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID || '';

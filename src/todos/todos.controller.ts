@@ -19,6 +19,7 @@ export class ToDosController {
   async createToDo(
     @Body() todo: Partial<ToDos>,
   ): Promise<{ todo: ToDos; whatsappStatus: string }> {
+    console.log('[DEBUG] /todos POST endpoint hit with body:', todo);
     return this.todosService.createToDo(todo);
   }
 
@@ -44,7 +45,7 @@ export class ToDosController {
   async deleteToDo(@Param('id') id: string): Promise<void> {
     return this.todosService.deleteToDo(+id);
   }
-  
+
   @Get('bucket/:bucketId')
   async getToDosByBucketId(
     @Param('bucketId') bucketId: string,

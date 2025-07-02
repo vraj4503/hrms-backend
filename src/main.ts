@@ -30,6 +30,7 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe());
 
+  console.log('=== HRMS BACKEND STARTED ===');
   await app.listen(process.env.PORT ?? 5000);
   console.log('Server running on Port 5000');
 }

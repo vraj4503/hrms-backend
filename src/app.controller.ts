@@ -13,6 +13,10 @@ export class AppController {
 
   @Get('test-email')
   async testEmail() {
-    return await sendMail('Urmi-Gurav@anantamit.com', 'Test Subject', 'Hello from HRMS!');
+    return await sendMail(
+      'Urmi-Gurav@anantamit.com',
+      'Test Subject',
+      'Hello from HRMS!',
+    );
   }
 }

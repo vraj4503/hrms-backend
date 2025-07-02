@@ -15,7 +15,7 @@ export class ToDosService {
   async createToDo(
     todo: Partial<ToDos>,
   ): Promise<{ todo: ToDos; whatsappStatus: string }> {
-    console.log('createToDo called with:', todo);
+    console.log('[DEBUG] createToDo called with:', todo);
     const {
       BucketID,
       AssignTo,
@@ -32,7 +32,7 @@ export class ToDosService {
       UpdatedBy,
     } = todo;
     const connection = await mysqlPool.getConnection();
-    let whatsappStatus = 'not_attempted';
+    const whatsappStatus = 'not_attempted';
     try {
       const [result] = await connection.execute(
         `INSERT INTO to_dos (BucketID, AssignTo, AssgnBy, NotificationTo, DueDateTime, Priority, StatusType, FilePath, Title, Description, CID, created, updated, CreatedBy, UpdatedBy)
@@ -62,40 +62,62 @@ export class ToDosService {
       const createdToDo = (rows as ToDos[])[0];
       console.log('Created ToDo:', createdToDo);
 
-      if (!createdToDo.AssignTo) {
-        whatsappStatus = 'no_assignee';
-        console.log(
-          'No assignee for this task, WhatsApp notification not attempted.',
-        );
-      } else {
+      // Notify the assignee
+      if (createdToDo.AssignTo) {
         try {
-          const user = await this.userService.findOne(
+          const assignee = await this.userService.findOne(
             Number(createdToDo.AssignTo),
           );
-          console.log('Fetched user for WhatsApp notification:', user);
-          if (user && user.Phone) {
+          if (assignee && assignee.Phone) {
             const message = `Task: ${createdToDo.Title ?? ''}\nDescription: ${createdToDo.Description ?? ''}`;
-            console.log(
-              'Preparing to send WhatsApp message to user:',
-              user.Phone,
-              'with message:',
-              message,
-            );
             const whatsappResult = await sendWhatsAppMessage(
-              user.Phone,
+              assignee.Phone,
               message,
             );
-            console.log('WhatsApp send result:', whatsappResult);
-            whatsappStatus = whatsappResult.success ? 'success' : 'unsuccess';
-          } else {
             console.log(
-              'User has no phone number, skipping WhatsApp notification.',
+              '[WhatsApp DEBUG] Assignee send result:',
+              whatsappResult,
             );
-            whatsappStatus = 'no_phone';
+          } else {
+            console.log('[WhatsApp DEBUG] Assignee has no phone number.');
           }
         } catch (err) {
-          console.error('Failed to send WhatsApp notification:', err);
-          whatsappStatus = 'unsuccess';
+          console.error('[WhatsApp DEBUG] Error sending to assignee:', err);
+        }
+      }
+
+      // Notify third person if NotificationTo is set
+      if (createdToDo.NotificationTo) {
+        try {
+          const assigner = createdToDo.AssgnBy
+            ? await this.userService.findOne(Number(createdToDo.AssgnBy))
+            : null;
+          const assignee = createdToDo.AssignTo
+            ? await this.userService.findOne(Number(createdToDo.AssignTo))
+            : null;
+          const notifyUser = await this.userService.findOne(
+            Number(createdToDo.NotificationTo),
+          );
+          if (notifyUser && notifyUser.Phone) {
+            const notifyMessage = `Task assigned by ${assigner ? assigner.Fname + ' ' + (assigner.Lname || '') : 'Unknown'} to ${assignee ? assignee.Fname + ' ' + (assignee.Lname || '') : 'Unknown'}.\nTask: ${createdToDo.Title ?? ''}\nDescription: ${createdToDo.Description ?? ''}`;
+            const notifyResult = await sendWhatsAppMessage(
+              notifyUser.Phone,
+              notifyMessage,
+            );
+            console.log(
+              '[WhatsApp DEBUG] NotificationTo send result:',
+              notifyResult,
+            );
+          } else {
+            console.log(
+              '[WhatsApp DEBUG] NotificationTo user has no phone number.',
+            );
+          }
+        } catch (err) {
+          console.error(
+            '[WhatsApp DEBUG] Error sending to NotificationTo user:',
+            err,
+          );
         }
       }
       return { todo: createdToDo, whatsappStatus };

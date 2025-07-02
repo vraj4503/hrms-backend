@@ -1,11 +1,11 @@
 import fetch from 'node-fetch';
 
 const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN || '';
-const PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID || '';
+//const PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID || '';
 
 export async function sendWhatsAppMessage(to: string, message: string) {
   try {
-    const url = `https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`;
+    const url = `https://graph.facebook.com/v22.0/652798854591840/messages`;
     const data = {
       messaging_product: 'whatsapp',
       to,

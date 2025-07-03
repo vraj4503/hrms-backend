@@ -18,8 +18,7 @@ export class AuthController {
       try {
         
         const validationResult = await this.authService.validateToken(encryptedToken);
-        
-        
+    
         const newLoginResult = await this.authService.login(req.user);
         return {
           ...validationResult,

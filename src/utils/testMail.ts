@@ -1,11 +1,13 @@
 import 'dotenv/config';
-import { sendMail } from "./email"; 
+import { sendMail } from './email';
 
-(async () => {
+async function main() {
   const response = await sendMail(
-    'vraj-prajapati@anantamit.com',
-    'Test Email',
-    'Hello! This is a test email from HRMS system.'
+    'YOUR_EMAIL@gmail.com', // <-- Replace with your real email
+    'Test Email from HRMS',
+    'This is a test email from your HRMS backend.'
   );
-  console.log(response);
-})();
+  console.log('Test email result:', response);
+}
+
+main();

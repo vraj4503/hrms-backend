@@ -225,9 +225,13 @@ export class UserService {
   async requestPasswordReset(email: string): Promise<void> {
     const connection = await mysqlPool.getConnection();
     try {
+      console.log('[OTP] Received password reset request for:', email);
       const [rows] = await connection.execute('SELECT * FROM user WHERE Email = ?', [email]);
       const user = (rows as User[])[0];
-      if (!user) return;
+      if (!user) {
+        console.log('[OTP] No user found for email:', email);
+        return;
+      }
 
       const otp = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit OTP
       const hashedOtp = crypto.createHash('sha256').update(otp).digest('hex');
@@ -238,16 +242,16 @@ export class UserService {
         [hashedOtp, expiryTime, user.UID]
       );
 
-      console.log('Preparing to send OTP email to:', user.Email, 'OTP:', otp);
+      console.log('[OTP] Sending OTP email to:', user.Email, 'OTP:', otp);
       const mailResult = await sendMail(
         user.Email,
         'Your OTP for Password Reset',
         `Your OTP is: ${otp}`,
       );
-      console.log('sendMail result:', mailResult);
+      console.log('[OTP] sendMail result:', mailResult);
     } catch (error) {
-      console.error('Error requesting password reset:', error);
-      throw new BadRequestException('Failed to request password reset.');
+      console.error('[OTP] Error requesting password reset:', error);
+      throw new BadRequestException('Failed to request password reset. ' + (error?.message || error));
     } finally {
       connection.release();
     }

@@ -11,7 +11,7 @@ export async function sendMail(
       service: 'gmail',
       auth: {
         user: 'hrmsmailer0405@gmail.com',
-        pass: 'fcypujojuvyhhmus',
+        pass: 'ivpgtwsyeewmiiras',
       },
     });
 

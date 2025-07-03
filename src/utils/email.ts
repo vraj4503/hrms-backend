@@ -1,5 +1,7 @@
 import nodemailer from 'nodemailer';
 
+const nodemailer = require('nodemailer');
+
 export async function sendMail(
   receiver: string,
   subject: string,

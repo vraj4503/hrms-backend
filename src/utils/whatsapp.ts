@@ -9,6 +9,12 @@ const WHATSAPP_TOKEN = 'EAAkzVqTA3y4BOxeSi9xHZCUtOisdIlRYmhRm3mZAGR5qOsibAHDZAxm
 
 
 export async function sendWhatsAppMessage(to: string, message: string) {
+  // Validate phone number format (must start with '+')
+  if (!/^\+\d{10,15}$/.test(to)) {
+    const msg = `Invalid phone number format for WhatsApp: ${to}`;
+    console.error(msg);
+    return { success: false, message: msg };
+  }
   try {
     const url = `https://graph.facebook.com/v22.0/652798854591840/messages`;
     const data = {
@@ -35,18 +41,18 @@ export async function sendWhatsAppMessage(to: string, message: string) {
     }
 
     if (response.ok) {
-      console.log('success');
+      console.log('WhatsApp API success:', responseBody);
+      return {
+        success: true,
+        data: responseBody as Record<string, unknown> | null,
+      };
     } else {
-      console.log('unsuccess');
       console.error('WhatsApp API error:', responseBody);
+      return {
+        success: false,
+        message: responseBody,
+      };
     }
-    if (!response.ok) {
-      throw new Error(JSON.stringify(responseBody));
-    }
-    return {
-      success: true,
-      data: responseBody as Record<string, unknown> | null,
-    };
   } catch (error: unknown) {
     let message = 'Failed to send WhatsApp message';
     if (
@@ -57,6 +63,7 @@ export async function sendWhatsAppMessage(to: string, message: string) {
     ) {
       message = (error as { message: string }).message;
     }
+    console.error('WhatsApp send error:', message);
     return {
       success: false,
       message,

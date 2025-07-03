@@ -14,7 +14,7 @@ export class ToDosService {
 
   async createToDo(
     todo: Partial<ToDos>,
-  ): Promise<{ todo: ToDos; whatsappStatus: string }> {
+  ): Promise<{ todo: ToDos; whatsappStatus: any }> {
     console.log('[DEBUG] createToDo called with:', todo);
     const {
       BucketID,
@@ -32,7 +32,7 @@ export class ToDosService {
       UpdatedBy,
     } = todo;
     const connection = await mysqlPool.getConnection();
-    const whatsappStatus = 'not_attempted';
+    let whatsappStatus: any = 'not_attempted';
     try {
       const [result] = await connection.execute(
         `INSERT INTO to_dos (BucketID, AssignTo, AssgnBy, NotificationTo, DueDateTime, Priority, StatusType, FilePath, Title, Description, CID, created, updated, CreatedBy, UpdatedBy)
@@ -74,6 +74,7 @@ export class ToDosService {
               assignee.Phone,
               message,
             );
+            whatsappStatus = whatsappResult;
             console.log(
               '[WhatsApp DEBUG] Assignee send result:',
               whatsappResult,
@@ -82,6 +83,7 @@ export class ToDosService {
             console.log('[WhatsApp DEBUG] Assignee has no phone number.');
           }
         } catch (err) {
+          whatsappStatus = { success: false, message: err?.message || String(err) };
           console.error('[WhatsApp DEBUG] Error sending to assignee:', err);
         }
       }

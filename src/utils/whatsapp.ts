@@ -3,6 +3,7 @@ import type { RequestInfo, RequestInit, Response } from 'node-fetch';
 const fetch: (url: RequestInfo, init?: RequestInit) => Promise<Response> =
   (...args) => import('node-fetch').then(mod => mod.default(...args));
 
+  
 const WHATSAPP_TOKEN = 'EAAkzVqTA3y4BOxeSi9xHZCUtOisdIlRYmhRm3mZAGR5qOsibAHDZAxmbg0HlH8pDYkpquq86rvq6rHXuZBfw4VjyCuGavNqcC6VHGCjXZBUBgXgA18zQYTnaHVTDbcP3zK2o7WYKvZBgsEYcUk0Aky0NU8p39ZCsUNITCtkNus3h6qiQxorMh0TZCEU3KI23innWseqvhhn8nupVSsfjmi24IFTIMuNYEgLpdqBITNKLRtleAAZDZD';
 // const PHONE_NUMBER_ID = '652798854591840';
 

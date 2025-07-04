@@ -1,3 +1,4 @@
+
 import { Controller, Post, Body, Get, Param, Put, Delete, UseGuards, Request, Patch } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -8,6 +9,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { RequestPasswordResetDto } from './dto/request-password-reset.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+//import { Query } from 'express';
 
 
 @Controller('user')
@@ -79,6 +81,16 @@ export class UserController {
     }
     const success = await this.userService.resetPassword(body.email, body.otp, body.newPassword);
     return { success };
+  }
+
+  @Post('check-email')
+  async checkEmail(@Body('email') email: string) {
+    const exists = await this.userService.isEmailExists(email);
+    if (exists) {
+      return { exists: true };
+    } else {
+      return { exists: false, message: 'Email ID not found' };
+    }
   }
 }
 

@@ -295,4 +295,10 @@ export class UserService {
       connection.release();
     }
   }
+
+  async isEmailExists(email: string): Promise<boolean> {
+    const connection = await mysqlPool.getConnection();
+    const [rows]: any = await connection.execute('SELECT 1 FROM user WHERE Email = ?', [email]);
+    return rows.length > 0;
+  }
 } 

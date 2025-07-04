@@ -2,9 +2,8 @@
 
 const fetch = require('node-fetch');
   
-const WHATSAPP_TOKEN = 'EAAkzVqTA3y4BPMIuxNZCDdNNQsQHphzgN5W5HrUXqZCZCodb8I6x3x8ExvYZAZBtsv0mcZCcsWMmYVwdpRuKegTxlLOZBDFEIV3f9x9RlcnXP2uezZCRDr9LkhJBdYAfCnGl0BuFeThEG3jUtt7znhschhmv7mIJJkPahZCOSK6Ap7zGf9iIJPKmy5oYjZAZBeGD7cmse8eUs5jvq0NRDFZBzRxlHLNChlXbRDDs7UY68yFPBw1LFYlZC';
+const WHATSAPP_TOKEN = 'EAAkzVqTA3y4BPEeZCU7R0ggFNchAzQtlEwrXOmel80fdkiMZBFtGynYpUPwTuIJmQmIgQCswOAdIRiZCE1qdDQ02g3HR6JPBfg6hmjeTgvO5B7zbTkeLXPoV9qQEDiaH3QeNVRQwPgckMhlUFThCFcXmRNCXa9RHE8WUWCBrHnmZBPzIgCutKTZAiG833FTJQqEFgUcRbMLM44xXrUIMdfzuBOl3QSLgxTHXnW9FxkDRrMlqo';
 // const PHONE_NUMBER_ID = '652798854591840';
-
 
 export async function sendWhatsAppMessage(to: string, message: string) {
   const fetch = (await import('node-fetch')).default;

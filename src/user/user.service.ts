@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, UnauthorizedException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+  BadRequestException,
+} from '@nestjs/common';
 import { User } from './user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -165,12 +170,12 @@ export class UserService {
     try {
       const user = await this.findOneByEmail(loginUserDto.email);
       if (!user) {
-        throw new UnauthorizedException('Invalid credentials');
+        throw new UnauthorizedException('Email not found');
       }
 
       const decryptedPassword = decrypt(user.Password);
       if (loginUserDto.password !== decryptedPassword) {
-        throw new UnauthorizedException('Invalid credentials');
+        throw new UnauthorizedException('Incorrect password');
       }
 
       return user;

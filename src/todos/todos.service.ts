@@ -197,7 +197,35 @@ export class ToDosService {
         `SELECT * FROM to_dos WHERE ToDoId = ?`,
         [id],
       );
-      return (rows as ToDos[])[0];
+      const updatedToDo = (rows as ToDos[])[0];
+
+      // Notify the assignee
+      if (updatedToDo.AssignTo) {
+        try {
+          const assignee = await this.userService.findOne(Number(updatedToDo.AssignTo));
+          if (assignee && assignee.Phone) {
+            const message = `Task Updated: ${updatedToDo.Title ?? ''}\nDescription: ${updatedToDo.Description ?? ''}`;
+            await sendWhatsAppMessage(assignee.Phone, message);
+          }
+        } catch (err) {
+          console.error('[WhatsApp DEBUG] Error sending update to assignee:', err);
+        }
+      }
+      // Notify third person if NotificationTo is set
+      if (updatedToDo.NotificationTo) {
+        try {
+          const assigner = updatedToDo.AssgnBy ? await this.userService.findOne(Number(updatedToDo.AssgnBy)) : null;
+          const assignee = updatedToDo.AssignTo ? await this.userService.findOne(Number(updatedToDo.AssignTo)) : null;
+          const notifyUser = await this.userService.findOne(Number(updatedToDo.NotificationTo));
+          if (notifyUser && notifyUser.Phone) {
+            const notifyMessage = `Task updated by ${assigner ? assigner.Fname + ' ' + (assigner.Lname || '') : 'Unknown'} for ${assignee ? assignee.Fname + ' ' + (assignee.Lname || '') : 'Unknown'}.\nTask: ${updatedToDo.Title ?? ''}\nDescription: ${updatedToDo.Description ?? ''}`;
+            await sendWhatsAppMessage(notifyUser.Phone, notifyMessage);
+          }
+        } catch (err) {
+          console.error('[WhatsApp DEBUG] Error sending update to NotificationTo user:', err);
+        }
+      }
+      return updatedToDo;
     } catch (error) {
       console.error(`Error updating ToDo with ID ${id}:`, error);
       throw new BadRequestException('Failed to update ToDo.');

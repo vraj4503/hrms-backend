@@ -61,6 +61,19 @@ export class UserService {
         console.warn(`Could not set CreatedBy for user ${newUser.UID}`);
       }
 
+      // Send welcome email
+      try {
+        console.log('Attempting to send welcome email to', newUser.Email);
+        const mailResult = await sendMail(
+          newUser.Email,
+          'Welcome to Anantam HRMS!',
+          `Hello ${newUser.Fname || ''},\n\nWelcome to Anantam HRMS! We are excited to have you on board.\n\nBest regards,\nThe Anantam Team`
+        );
+        console.log('Welcome email result:', mailResult);
+      } catch (e) {
+        console.error('Failed to send welcome email:', e);
+      }
+
       return newUser;
     } catch (error) {
       console.error('Error creating user:', error);

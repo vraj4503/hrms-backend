@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { Company } from './company.entity';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
@@ -12,11 +16,15 @@ export class CompanyService {
     const { companyName, location, strength } = createCompanyDto;
     const connection = await mysqlPool.getConnection();
     try {
+      // Check for unique company name
+      const [existing] = await connection.execute('SELECT * FROM Company WHERE CompanyName = ?', [companyName]);
+      if ((existing as Company[]).length > 0) {
+        throw new BadRequestException('Company name already exists. Please choose a different name.');
+      }
       const [result] = await connection.execute(
         'INSERT INTO Company (CompanyName, Location, Strength, created, updated) VALUES (?, ?, ?, NOW(), NOW())',
         [companyName, location, strength]
       );
-
       const insertedId = (result as any).insertId;
       const [rows] = await connection.execute('SELECT * FROM Company WHERE CID = ?', [insertedId]);
       return (rows as Company[])[0];

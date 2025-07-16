@@ -88,7 +88,7 @@ export class ToDosService {
         }
       }
 
-      // Notify third person if NotificationTo is set
+      
       if (createdToDo.NotificationTo) {
         try {
           const assigner = createdToDo.AssgnBy
